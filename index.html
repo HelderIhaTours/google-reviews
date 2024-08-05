@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Reviews</title>
+    <style>
+        .review {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="reviews"></div>
+
+    <script>
+        const apiKey = 'AIzaSyAQmdpXxXEe1nGr2Cyx_QdOiMKz6Ou-vFU';
+        const placeId = 'ChIJoeussmvVXAsRiLz4dr8WsUI';
+
+        async function fetchReviews() {
+            const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`);
+            const data = await response.json();
+
+            if (data.result && data.result.reviews) {
+                const reviews = data.result.reviews;
+                const reviewsContainer = document.getElementById('reviews');
+
+                reviews.forEach(review => {
+                    const reviewElement = document.createElement('div');
+                    reviewElement.className = 'review';
+                    reviewElement.innerHTML = `
+                        <p><strong>${review.author_name}</strong></p>
+                        <p>Rating: ${review.rating}</p>
+                        <p>${review.text}</p>
+                    `;
+                    reviewsContainer.appendChild(reviewElement);
+                });
+            } else {
+                document.getElementById('reviews').innerText = 'No reviews found.';
+            }
+        }
+
+        fetchReviews();
+    </script>
+</body>
+</html>
